@@ -61,7 +61,7 @@ Evaluating alignment ..
 	   gt shift: (-9, 4) (-8,-1)
 	 pred shift: ( 9,-4) ( 8, 1)
 ```
-Plots are attached in Appendix C.
+Plots are in `./fig/evalAlignment-plots`.
 
 #### `alignProkudin.m` output
 ```
@@ -72,12 +72,12 @@ Plots are attached in Appendix C.
 5 00351v.jpg shift: B (-9,-1) R (-13,-1)
 6 01112v.jpg shift: B (-5,-1) R (-5,-1)
 ```
-Plots are attached in Appendix D.
+Plots are in `./fig/prokudin-gorskii-align`.
 
 #### Boundary effects
 Since two channels are aligned, not all pixels contain useful information. For example, the following left figure shows the ugly boundary effect. We will use the intersection from all three channels as our infomation window to trim. This information window is defined by `[ulI, ulJ]`x`[brI, brJ]`. It gets updated from the alignment amounts for channel2 and channel3 by the following "find overlapping" algorithm. Another brute-force is to crop the aligned image by 5 percent across the border. Though this method gives a better shape, the "cropped" border may contain significant information. Hence the "triming" method is adoped here.
 
-![](./fig/alignNoTrim.png)![](./fig/alignTrim.png)![](./fig/alignCrop.png)    
+![](./fig/boundary-effects/alignNoTrim.png)![](./fig/boundary-effects/alignTrim.png)![](./fig/boundary-effects/alignCrop.png)    
 *Figure 1.2 Comparison between alignment without considering boundary effect (upper left) and with trimming (upper right), with cropping (bottom left)*
 
 ```matlab
@@ -179,19 +179,19 @@ end
 #### Gradient domain alignment
 Overdue emphasis on constant intensity regions may produce misalignment among channels. For example, misalignment using raw channel values for the sixth image "candy" is observed.
 
-![](candyNoEdge.png)  
+![](./fig/gradient-domain-alignment/candyNoEdge.png)  
 *Figure 1.3 Alignment without edge extraction*
 
 Edge within a channel matters to the channel alignment. To avoid overdue emphasis on constant intensity regions, we first use `edge()` function to extract edges before any alignments. Different methods are provided in the `edge()` function. The figure below compares these six methods.
 
-![](edge.png)  
+![](fig/gradient-domain-alignment/edge.png)  
 *Figure 1.4 Comparison among all edge() methods*
 
 In this homework, the `Canny` method is found to outperform other methods across the image set. Hence `Canny` method is adopted.
 
 After trying out this `edge()` preprocessing, "candy" not can be aligned correctly, shown below.
 
-![](6.png)  
+![](./fig/evalAlignment-plots/6.png)  
 *Figure 1.5 Alignment with edge extraction*
 
 ## Part 2: Color image demosaicing
@@ -284,8 +284,7 @@ Since these kernels assume value zero outside the boundaries when averaging or d
     b | a b c d
     f | e f g h
 ```
-#### `demosaicImage.m` implementation
-See Appendix B
+
 #### `evalDemosaicing.m` output
 ```
 --------------------------------------------------------------
@@ -305,7 +304,7 @@ See Appendix B
  	 average 	 0.139150 	 0.025492 	 0.015620 	 0.014599 
 --------------------------------------------------------------
 ```
-Plots are attached in Appendix E.
+Plots are in `./fig/demosaic`.
 
 **Analysis**  
 Based on the evaluation, all three implemented methods give better interpolation results compared to the baseline method with a improvement ratio about 10 times. The linear method and the adagrad method outperform the nearest neighbour method since they both smooth the gradient. The error improvement from linear method to adagrad method is small. In fact, whether or not we see the improvement depends on the input images, which is case-by-case as the output shows.
@@ -313,103 +312,13 @@ Based on the evaluation, all three implemented methods give better interpolation
 #### Digital Prokudin-Gorskii
 Start with the aligned images of the first part and create a mosaiced image by sampling the channels image using the Bayer pattern. Then run the demosaicing algorithms and compare the resulting image with the input color image as below.
 
-![](digitalPG.png)  
+![](./fig/digitalPG/digitalPG.png)  
 *Figure 2.3 Digital Prokudin-Gorskii flow output*
 
 To see the difference, calculate the absolute difference between the input color image and interpolated image by calling `imabsdiff()`. The figure below shows the error for each method.
 
-![](digitalError.png)  
+![](./fig/digitalPG/digitalError.png)  
 *Figure 2.4 Digital Prokudin-Gorskii error for each method*
 
 The linear method and the adaptive gradient method outperform the baseline method and the nearest neighbour method since the black pixels represents no error at these pixels. The error are located at the interpolation pixels, (especially those pixels with large gradient) since the estimation for the constant intensity regions is quite accurate and the estimation for the large transient region has larger error.
 
-# Appendix C `evalAlignment.m` Plots
-![](1.png)  
-*Figure C.1 balloon.jpeg*
-	
-![](2.png)  
-*Figure C.2 cat.jpg*
-
-![](3.png)  
-*Figure C.3 ip.jpg*
-
-![](4.png)  
-*Figure C.4 puppy.jpg*
-
-![](5.png)  
-*Figure C.5 squirrel.jpg*
-	
-![](6.png)  
-*Figure C.6 candy.jpeg*
-
-![](7.png)  
-*Figure C.7 house.png*
-
-![](8.png)  
-*Figure C.8 light.png*
-
-![](9.png)  
-*Figure C.9 sails.png*
-
-![](10.png)  
-*Figure C.10 tree.jpeg*
-
-# Appendix D `alignProkudin.m` Plots
-![](align00125.png)  
-*Figure D.1 00125v.jpg*
-
-![](align00153.png)  
-*Figure D.2 00153v.jpg*
-
-![](align00398.png)  
-*Figure D.3 00398v.jpg*
-
-![](align00149.png)  
-*Figure D.4 00149v.jpg*
-
-![](align00351.png)  
-*Figure D.5 00351v.jpg*
-
-![](align01112.png)  
-*Figure D.6 01112v.jpg*
-
-# Appendix E `evalDemosaicing.m` Plots
-![](balloon-baseline-dmsc.jpg)![](balloon-nn-dmsc.jpg)  
-![](balloon-linear-dmsc.jpg)![](balloon-adagrad-dmsc.jpg)  
-*Figure E.1 balloon baseline (upper left), nearist neighbour (upper right), linear (bottom left) adaptive gradient (bottom right)*
-
-![](ca-baseline-dmsc.jpg)![](ca-nn-dmsc.jpg)  
-![](ca-linear-dmsc.jpg)![](ca-adagrad-dmsc.jpg)  
-*Figure E.2 cat baseline (upper left), nearist neighbour (upper right), linear (bottom left) adaptive gradient (bottom right)*
-
-![](i-baseline-dmsc.jpg)![](i-nn-dmsc.jpg)  
-![](i-linear-dmsc.jpg)![](i-adagrad-dmsc.jpg)  
-*Figure E.3 ip baseline (upper left), nearist neighbour (upper right), linear (bottom left) adaptive gradient (bottom right)*
-
-![](pupp-baseline-dmsc.jpg)![](pupp-nn-dmsc.jpg)  
-![](pupp-linear-dmsc.jpg)![](pupp-adagrad-dmsc.jpg)  
-*Figure E.4 puppy baseline (upper left), nearist neighbour (upper right), linear (bottom left) adaptive gradient (bottom right)*
-
-![](squirre-baseline-dmsc.jpg)![](squirre-nn-dmsc.jpg)  
-![](squirre-linear-dmsc.jpg)![](squirre-adagrad-dmsc.jpg)  
-*Figure E.5 squirrel baseline (upper left), nearist neighbour (upper right), linear (bottom left) adaptive gradient (bottom right)*
-
-![](candy-baseline-dmsc.jpg)![](candy-nn-dmsc.jpg)  
-![](candy-linear-dmsc.jpg)![](candy-adagrad-dmsc.jpg)  
-*Figure E.6 candy baseline (upper left), nearist neighbour (upper right), linear (bottom left) adaptive gradient (bottom right)*
-
-![](hous-baseline-dmsc.jpg)![](hous-nn-dmsc.jpg)  
-![](hous-linear-dmsc.jpg)![](hous-adagrad-dmsc.jpg)  
-*Figure E.7 house baseline (upper left), nearist neighbour (upper right), linear (bottom left) adaptive gradient (bottom right)*
-
-![](ligh-baseline-dmsc.jpg)![](ligh-nn-dmsc.jpg)  
-![](ligh-linear-dmsc.jpg)![](ligh-adagrad-dmsc.jpg)  
-*Figure E.8 light baseline (upper left), nearist neighbour (upper right), linear (bottom left) adaptive gradient (bottom right)*
-
-![](sail-baseline-dmsc.jpg)![](sail-nn-dmsc.jpg)  
-![](sail-linear-dmsc.jpg)![](sail-adagrad-dmsc.jpg)  
-*Figure E.9 sails baseline (upper left), nearist neighbour (upper right), linear (bottom left) adaptive gradient (bottom right)*
-
-![](tree-baseline-dmsc.jpg)![](tree-nn-dmsc.jpg)  
-![](tree-linear-dmsc.jpg)![](tree-adagrad-dmsc.jpg)  
-*Figure E.10 tree baseline (upper left), nearist neighbour (upper right), linear (bottom left) adaptive gradient (bottom right)*
