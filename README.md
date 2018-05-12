@@ -1,4 +1,4 @@
-Umich EECS 442 (Winter 2018) homework 1 by Wenzhe Xu
+# Umich EECS 442 (Winter 2018) homework 1 by Wenzhe Xu
 
 Keywords: color channels alignment, digital camera color demosaicing
 
